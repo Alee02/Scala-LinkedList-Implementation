@@ -1,4 +1,4 @@
-package generics
+package testing
 
 object Generics extends App{
   // lists should be Covariant
@@ -62,5 +62,10 @@ object Generics extends App{
   class Car
   // This will throw an error because cage only accepts type that is a a sub type of animal
 //  val newCage = new Cage(new Car)
+
+
+
+
+
 
 }
