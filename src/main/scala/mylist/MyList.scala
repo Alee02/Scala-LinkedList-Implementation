@@ -16,9 +16,7 @@ abstract class MyList[+A] {
   def ++[B >: A](list: MyList[B]): MyList[B]
 }
 
-class Empty[A]
-
-object Empty extends MyList {
+case object Empty extends MyList {
 
   override def head: Nothing = throw new NoSuchElementException
 
@@ -26,7 +24,7 @@ object Empty extends MyList {
 
   override def tail: MyList[Nothing] = throw new NoSuchElementException
 
-  override def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)
+  override def add[B >: Nothing](element: B): MyList[B] = Cons(element, Empty)
 
   override def printElements: String = ""
 
@@ -39,11 +37,11 @@ object Empty extends MyList {
   override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
 
-class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def head: A = h
   def isEmpty: Boolean = false
   def tail: MyList[A] = t
-  def add[B >: A](element: B): MyList[B] = new Cons(element, this)
+  def add[B >: A](element: B): MyList[B] = Cons(element, this)
 
   def printElements: String = {
     if(t.isEmpty) "" + h
@@ -66,11 +64,11 @@ class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   }
 
   override def filter(predicate: MyPredicate[A]): MyList[A] = {
-    if (predicate.test(h)) new Cons(h, t.filter(predicate))
+    if (predicate.test(h)) Cons(h, t.filter(predicate))
     else t.filter(predicate)
   }
 
-  override def ++[B >: A](list: MyList[B]): MyList[B] = new Cons(h, t ++ list)
+  override def ++[B >: A](list: MyList[B]): MyList[B] = Cons(h, t ++ list)
 }
 
 trait MyPredicate[-T] {
