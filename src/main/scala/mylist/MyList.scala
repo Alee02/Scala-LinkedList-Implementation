@@ -81,13 +81,3 @@ trait MyTransformer[-A, B] {
   def transform(element: A): B
 }
 
-object ListTest extends App {
-
-  val list = new Cons(true, new Cons(true , new Cons(true, Empty)))
-  val listOfIntegers = new Cons(1, new Cons(2 , new Cons(3, Empty)))
-
-  println(listOfIntegers.filter(new MyPredicate[Int] {
-    override def test(element: Int): Boolean = element < 2
-  }))
-
-}
