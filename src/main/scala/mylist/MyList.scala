@@ -10,7 +10,7 @@ abstract class MyList[+A] {
     "MyList("+  printElements + ")"
   }
 
-  def map[B](transformer: Function1[A, B]): MyList[B]
+  def map[B](transformer: A => B): MyList[B]
   def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B]
   def filter(predicate: MyPredicate[A]): MyList[A]
   def ++[B >: A](list: MyList[B]): MyList[B]
@@ -28,7 +28,7 @@ case object Empty extends MyList {
 
   override def printElements: String = ""
 
-  override def map[B](transformer: Function1[Nothing, B]): MyList[B] = Empty
+  override def map[B](transformer: _ => B): MyList[B] = Empty
 
   override def flatMap[B](transformer: MyTransformer[Nothing, MyList[B]]): MyList[B] = Empty
 
@@ -48,7 +48,7 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
     else h + ", " + t.printElements
   }
 
-  override def map[B](transformer: Function1[A, B]): MyList[B] = {
+  override def map[B](transformer: A => B): MyList[B] = {
     new Cons[B](transformer(h), t.map(transformer))
   }
 
