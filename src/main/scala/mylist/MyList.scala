@@ -15,6 +15,7 @@ abstract class MyList[+A] {
   def filter(predicate: MyPredicate[A]): MyList[A]
   def ++[B >: A](list: MyList[B]): MyList[B]
   def foreach(f: A => Unit): Unit
+  def sort(compare: (A, A) => Int): MyList[A]
 }
 
 case object Empty extends MyList {
@@ -38,6 +39,8 @@ case object Empty extends MyList {
   override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
   
   override def foreach(f: Nothing => Unit): Unit = ()
+  
+  override def sort(compare: (Nothing, Nothing) => Int) = Empty
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -76,6 +79,17 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def foreach(f: A => Unit): Unit = {
     f(h)
     t.foreach(f)
+  }
+  
+  def sort(compare: (A, A) => Int): MyList[A] = {
+    def insert(x: A, sortedList: MyList[A]): MyList[A] = {
+      if (sortedList.isEmpty) new Cons(x, Empty)
+      else if (compare(x, sortedList.head) <= 0) new Const(x, sortedList)
+      else new Const(sortedList.head, insert(x, sortedList.tail)
+    }
+    
+    val sortedTail = t.sort(compare)
+    insert(h, sortedTail)
   }
 }
 
