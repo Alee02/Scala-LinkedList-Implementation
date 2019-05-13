@@ -14,6 +14,7 @@ abstract class MyList[+A] {
   def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B]
   def filter(predicate: MyPredicate[A]): MyList[A]
   def ++[B >: A](list: MyList[B]): MyList[B]
+  def foreach(f: A => Unit): Unit
 }
 
 case object Empty extends MyList {
@@ -35,6 +36,8 @@ case object Empty extends MyList {
   override def filter(predicate: MyPredicate[Nothing]): MyList[Nothing] = Empty
 
   override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
+  
+  override def foreach(f: Nothing => Unit): Unit = ()
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -69,6 +72,11 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   }
 
   override def ++[B >: A](list: MyList[B]): MyList[B] = Cons(h, t ++ list)
+  
+  def foreach(f: A => Unit): Unit = {
+    f(h)
+    t.foreach(f)
+  }
 }
 
 trait MyPredicate[-T] {
