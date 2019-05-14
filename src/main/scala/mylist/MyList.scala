@@ -20,27 +20,27 @@ abstract class MyList[+A] {
 
 case object Empty extends MyList {
 
-  override def head: Nothing = throw new NoSuchElementException
+  def head: Nothing = throw new NoSuchElementException
 
-  override def isEmpty: Boolean = true
+  def isEmpty: Boolean = true
 
-  override def tail: MyList[Nothing] = throw new NoSuchElementException
+  def tail: MyList[Nothing] = throw new NoSuchElementException
 
-  override def add[B >: Nothing](element: B): MyList[B] = Cons(element, Empty)
+  def add[B >: Nothing](element: B): MyList[B] = Cons(element, Empty)
 
-  override def printElements: String = ""
+  def printElements: String = ""
 
-  override def map[B](transformer: _ => B): MyList[B] = Empty
+  def flatMap[B](transformer: MyTransformer[Nothing, MyList[B]]): MyList[B] = Empty
 
-  override def flatMap[B](transformer: MyTransformer[Nothing, MyList[B]]): MyList[B] = Empty
+  def filter(predicate: MyPredicate[Nothing]): MyList[Nothing] = Empty
 
-  override def filter(predicate: MyPredicate[Nothing]): MyList[Nothing] = Empty
-
-  override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
+  def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
   
-  override def foreach(f: Nothing => Unit): Unit = ()
+  def foreach(f: Nothing => Unit): Unit = ()
   
-  override def sort(compare: (Nothing, Nothing) => Int) = Empty
+  def sort(compare: (Nothing, Nothing) => Int) = Empty
+
+  def map[B](transformer: Nothing => B): MyList[B] = Empty
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -84,8 +84,8 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def sort(compare: (A, A) => Int): MyList[A] = {
     def insert(x: A, sortedList: MyList[A]): MyList[A] = {
       if (sortedList.isEmpty) new Cons(x, Empty)
-      else if (compare(x, sortedList.head) <= 0) new Const(x, sortedList)
-      else new Const(sortedList.head, insert(x, sortedList.tail)
+      else if (compare(x, sortedList.head) <= 0) new Cons(x, sortedList)
+      else new Cons(sortedList.head, insert(x, sortedList.tail))
     }
     
     val sortedTail = t.sort(compare)
